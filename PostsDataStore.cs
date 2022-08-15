@@ -5,8 +5,6 @@ namespace website_backend
     {
         public List<PostDto> Posts { get; set; }
 
-        public static PostsDataStore Current { get; } = new PostsDataStore();
-
         public PostsDataStore()
         {
             Posts = new List<PostDto>()

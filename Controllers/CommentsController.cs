@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using website_backend.Models;
+using website_backend.Services;
 
 namespace website_backend.Controllers
 {
@@ -8,27 +9,58 @@ namespace website_backend.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
+
+        private readonly ILogger<CommentsController> _logger;
+        private readonly IMailService _mailService;
+        private readonly PostsDataStore _postsDataStore;
+
+        public CommentsController(ILogger<CommentsController> logger, IMailService mailService, PostsDataStore postsDataStore)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _postsDataStore = postsDataStore ?? throw new ArgumentNullException(nameof(postsDataStore));
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<CommentDto>> GetComments(int postId)
         {
-            var post = PostsDataStore.Current.Posts.FirstOrDefault(p => p.Id == postId);
+            try
+            {
+                var post = _postsDataStore.Posts.FirstOrDefault(p => p.Id == postId);
+                if (post == null)
+                {
+                    _logger.LogInformation($"Post with id {postId} not found");
+                    return NotFound();
+                }
+                return Ok(post.Comments);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical($"Exception while getting post {postId}", ex);
+                return StatusCode(500, "A problem happened while handling your request");
 
-            if (post == null) return NotFound();
-
-
-            return Ok(post.Comments);
+            }
         }
 
         [HttpGet("{commentid}", Name = "GetComment")]
         public ActionResult<CommentDto> GetComment(int postId, int commentId)
         {
-            var post = PostsDataStore.Current.Posts.FirstOrDefault(p => p.Id == postId);
-            if (post == null) return NotFound();
+            try
+            {
+                var post = _postsDataStore.Posts.FirstOrDefault(p => p.Id == postId);
+                if (post == null) return NotFound();
 
-            var comment = post.Comments.FirstOrDefault(c => c.Id == commentId);
-            if (comment == null) return NotFound();
+                var comment = post.Comments.FirstOrDefault(c => c.Id == commentId);
+                if (comment == null) return NotFound();
 
-            return Ok(comment);
+                return Ok(comment);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical($"Exception while getting post {postId}", ex);
+                return StatusCode(500, "A problem happened while handling your request");
+
+            }
         }
 
         [HttpPost]
@@ -37,10 +69,10 @@ namespace website_backend.Controllers
           CommentCreationDto comment)
         {
 
-            var post = PostsDataStore.Current.Posts.FirstOrDefault(p => p.Id == postId);
+            var post = _postsDataStore.Posts.FirstOrDefault(p => p.Id == postId);
             if (post == null) return NotFound();
 
-            var maxCommentId = PostsDataStore.Current.Posts.SelectMany(
+            var maxCommentId = _postsDataStore.Posts.SelectMany(
                 p => p.Comments).Max(c => c.Id);
 
             var finalComment = new CommentDto()
@@ -67,7 +99,7 @@ namespace website_backend.Controllers
           CommentCreationDto comment)
         {
 
-            var post = PostsDataStore.Current.Posts.FirstOrDefault(p => p.Id == postId);
+            var post = _postsDataStore.Posts.FirstOrDefault(p => p.Id == postId);
             if (post == null) return NotFound();
 
             var commentFromStore = post.Comments.FirstOrDefault(c => c.Id == commentId);
@@ -87,7 +119,7 @@ namespace website_backend.Controllers
          JsonPatchDocument<CommentForUpdateDto> patchComment)
         {
 
-            var post = PostsDataStore.Current.Posts.FirstOrDefault(p => p.Id == postId);
+            var post = _postsDataStore.Posts.FirstOrDefault(p => p.Id == postId);
             if (post == null) return NotFound();
 
             var commentFromStore = post.Comments.FirstOrDefault(c => c.Id == commentId);
@@ -113,12 +145,12 @@ namespace website_backend.Controllers
         [HttpDelete("{commentId}")]
         public ActionResult DeleteComment(int postId, int commentId)
         {
-            var post = PostsDataStore.Current.Posts.FirstOrDefault(p => p.Id == postId);
+            var post = _postsDataStore.Posts.FirstOrDefault(p => p.Id == postId);
             if (post == null) return NotFound();
 
             var commentFromStore = post.Comments.FirstOrDefault(c => c.Id == commentId);
             if (commentFromStore == null) return NotFound();
-
+            _mailService.Send(subject: $"Post {postId} was deleted.", message: "It truly was");
             post.Comments.Remove(commentFromStore);
             return NoContent();
         }
