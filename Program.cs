@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using website_backend;
+using website_backend.DbContexts;
 using website_backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,8 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
+builder.Services.AddDbContext<WebsiteContext>(
+    dbContextOptions => dbContextOptions.UseSqlite(builder.Configuration["ConnectionStrings:WebsiteDBConnectionString"]));
 
 #if DEBUG
 builder.Services.AddTransient<IMailService, LocalMailService>();
