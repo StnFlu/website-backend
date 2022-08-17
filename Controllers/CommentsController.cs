@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using website_backend.Models;
@@ -25,6 +26,8 @@ namespace website_backend.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+
         public async Task<ActionResult<IEnumerable<CommentDto>>> GetComments(int postId)
         {
             if (!await _websiteInfoRepository.PostExistsAsync(postId))
@@ -38,6 +41,8 @@ namespace website_backend.Controllers
         }
 
         [HttpGet("{commentid}", Name = "GetComment")]
+        [AllowAnonymous]
+
         public async Task<ActionResult<CommentDto>> GetComment(int postId, int commentId)
         {
             if (!await _websiteInfoRepository.PostExistsAsync(postId))
@@ -105,6 +110,7 @@ namespace website_backend.Controllers
         }
 
         [HttpPatch("{commentid}")]
+
         public async Task<ActionResult> PartiallyUpdateComment(
          int postId,
          int commentId,

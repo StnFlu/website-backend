@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace website_backend.Controllers
@@ -17,6 +18,8 @@ namespace website_backend.Controllers
         }
 
         [HttpGet("{fileId}")]
+        [AllowAnonymous]
+
         public ActionResult GetFile(string fileId)
         {
             var pathToFile = "StnFlu.png";

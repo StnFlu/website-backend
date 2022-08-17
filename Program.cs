@@ -15,8 +15,13 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
+#if DEBUG
 builder.Services.AddDbContext<WebsiteContext>(
     dbContextOptions => dbContextOptions.UseSqlite(builder.Configuration["ConnectionString:WebsiteDBConnectionString"]));
+#else
+builder.Services.AddDbContext<WebsiteContext>(
+    dbContextOptions => dbContextOptions.UseSqlServer(builder.Configuration["ConnectionString:WebsiteDBConnectionString"]));
+#endif
 
 #if DEBUG
 builder.Services.AddTransient<IMailService, LocalMailService>();
@@ -33,8 +38,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+
 }
 
 app.UseHttpsRedirection();

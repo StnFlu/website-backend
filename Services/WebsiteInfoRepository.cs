@@ -31,6 +31,12 @@ namespace website_backend.Services
             return await _context.Posts.AnyAsync(p => p.Id == postId);
         }
 
+        public void DeletePost(Post post)
+        {
+            _context.Posts.Remove(post);
+        }
+
+
         public async Task<IEnumerable<Comment?>> GetCommentsAsync(int postId)
         {
             return await _context.Comments.Where(c => c.PostId == postId).ToListAsync();

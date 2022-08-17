@@ -10,6 +10,9 @@ namespace website_backend.Services
 
         Task<bool> PostExistsAsync(int postId);
 
+        void DeletePost(Post post);
+
+
         Task<IEnumerable<Comment?>> GetCommentsAsync(int postId);
 
         Task<Comment?> GetCommentAsync(int postId, int commentId);

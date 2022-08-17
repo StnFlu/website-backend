@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/website-backenddbserver/databases/website-backend_db",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionString:WebsiteDBConnectionString",
+      "dynamicId": null
+    }
+  }
+}
