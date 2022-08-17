@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using website_backend.Models;
 using website_backend.Services;
@@ -12,146 +13,149 @@ namespace website_backend.Controllers
 
         private readonly ILogger<CommentsController> _logger;
         private readonly IMailService _mailService;
-        private readonly PostsDataStore _postsDataStore;
+        private readonly IWebsiteRepository _websiteInfoRepository;
+        private readonly IMapper _mapper;
 
-        public CommentsController(ILogger<CommentsController> logger, IMailService mailService, PostsDataStore postsDataStore)
+        public CommentsController(IWebsiteRepository websiteInfoRepository, IMapper mapper, ILogger<CommentsController> logger, IMailService mailService, PostsDataStore postsDataStore)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
-            _postsDataStore = postsDataStore ?? throw new ArgumentNullException(nameof(postsDataStore));
+            _websiteInfoRepository = websiteInfoRepository ?? throw new ArgumentNullException(nameof(websiteInfoRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(websiteInfoRepository));
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CommentDto>> GetComments(int postId)
+        public async Task<ActionResult<IEnumerable<CommentDto>>> GetComments(int postId)
         {
-            try
+            if (!await _websiteInfoRepository.PostExistsAsync(postId))
             {
-                var post = _postsDataStore.Posts.FirstOrDefault(p => p.Id == postId);
-                if (post == null)
-                {
-                    _logger.LogInformation($"Post with id {postId} not found");
-                    return NotFound();
-                }
-                return Ok(post.Comments);
+                _logger.LogInformation($"Post with id {postId} not found");
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                _logger.LogCritical($"Exception while getting post {postId}", ex);
-                return StatusCode(500, "A problem happened while handling your request");
+            var getComments = await _websiteInfoRepository.GetCommentsAsync(postId);
 
-            }
+            return Ok(_mapper.Map<IEnumerable<CommentDto>>(getComments));
         }
 
         [HttpGet("{commentid}", Name = "GetComment")]
-        public ActionResult<CommentDto> GetComment(int postId, int commentId)
+        public async Task<ActionResult<CommentDto>> GetComment(int postId, int commentId)
         {
-            try
+            if (!await _websiteInfoRepository.PostExistsAsync(postId))
             {
-                var post = _postsDataStore.Posts.FirstOrDefault(p => p.Id == postId);
-                if (post == null) return NotFound();
-
-                var comment = post.Comments.FirstOrDefault(c => c.Id == commentId);
-                if (comment == null) return NotFound();
-
-                return Ok(comment);
+                return NotFound();
             }
-            catch (Exception ex)
+            var getComment = await _websiteInfoRepository.GetCommentAsync(postId, commentId);
+
+            if (getComment == null)
             {
-                _logger.LogCritical($"Exception while getting post {postId}", ex);
-                return StatusCode(500, "A problem happened while handling your request");
-
+                return NotFound();
             }
+            return Ok(_mapper.Map<CommentDto>(getComment));
         }
 
         [HttpPost]
-        public ActionResult<CommentDto> CreateComment(
-          int postId,
-          CommentCreationDto comment)
+        public async Task<ActionResult<CommentDto>> CreateComment(
+           int postId,
+           CommentCreationDto comment)
         {
-
-            var post = _postsDataStore.Posts.FirstOrDefault(p => p.Id == postId);
-            if (post == null) return NotFound();
-
-            var maxCommentId = _postsDataStore.Posts.SelectMany(
-                p => p.Comments).Max(c => c.Id);
-
-            var finalComment = new CommentDto()
+            if (!await _websiteInfoRepository.PostExistsAsync(postId))
             {
-                Id = ++maxCommentId,
-                Title = comment.Title,
-                Body = comment.Body
-            };
+                return NotFound();
+            }
 
-            post.Comments.Add(finalComment);
+            var finalComment = _mapper.Map<Entities.Comment>(comment);
+
+            await _websiteInfoRepository.AddCommentForPostAsync(postId, finalComment);
+
+            await _websiteInfoRepository.SaveChangesAsync();
+
+            var createdCommentToReturn = _mapper.Map<Models.CommentDto>(finalComment);
 
             return CreatedAtRoute("GetComment",
                 new
                 {
                     postId = postId,
-                    commentId = finalComment.Id
+                    commentId = createdCommentToReturn.Id
                 },
-                finalComment);
+                createdCommentToReturn);
         }
+
         [HttpPut("{commentid}")]
-        public ActionResult UpdateComment(
+        public async Task<ActionResult> UpdateComment(
           int postId,
           int commentId,
           CommentCreationDto comment)
         {
+            if (!await _websiteInfoRepository.PostExistsAsync(postId))
+            {
+                return NotFound();
+            }
+            var commentEntity = await _websiteInfoRepository.GetCommentAsync(postId, commentId);
 
-            var post = _postsDataStore.Posts.FirstOrDefault(p => p.Id == postId);
-            if (post == null) return NotFound();
+            if (commentEntity == null)
+            {
+                return NotFound();
+            }
+            _mapper.Map(comment, commentEntity);
 
-            var commentFromStore = post.Comments.FirstOrDefault(c => c.Id == commentId);
-            if (commentFromStore == null) return NotFound();
-
-            commentFromStore.Title = comment.Title;
-            commentFromStore.Body = comment.Body;
+            await _websiteInfoRepository.SaveChangesAsync();
 
             return NoContent();
 
         }
 
         [HttpPatch("{commentid}")]
-        public ActionResult PartiallyUpdateComment(
+        public async Task<ActionResult> PartiallyUpdateComment(
          int postId,
          int commentId,
          JsonPatchDocument<CommentForUpdateDto> patchComment)
         {
-
-            var post = _postsDataStore.Posts.FirstOrDefault(p => p.Id == postId);
-            if (post == null) return NotFound();
-
-            var commentFromStore = post.Comments.FirstOrDefault(c => c.Id == commentId);
-            if (commentFromStore == null) return NotFound();
-
-            var commentToPatch = new CommentForUpdateDto()
+            if (!await _websiteInfoRepository.PostExistsAsync(postId))
             {
-                Title = commentFromStore.Title,
-                Body = commentFromStore.Body,
-            };
+                return NotFound();
+            }
+
+            var commentEntity = await _websiteInfoRepository.GetCommentAsync(postId, commentId);
+
+            if (commentEntity == null)
+            {
+                return NotFound();
+            }
+
+            var commentToPatch = _mapper.Map<CommentForUpdateDto>(commentEntity);
 
             patchComment.ApplyTo(commentToPatch, ModelState);
 
             if (!TryValidateModel(commentToPatch)) return BadRequest(ModelState);
 
-            commentFromStore.Title = commentToPatch.Title;
-            commentFromStore.Body = commentToPatch.Body;
+            _mapper.Map(commentToPatch, commentEntity);
+
+            await _websiteInfoRepository.SaveChangesAsync();
 
             return NoContent();
 
         }
 
         [HttpDelete("{commentId}")]
-        public ActionResult DeleteComment(int postId, int commentId)
+        public async Task<ActionResult> DeleteComment(int postId, int commentId)
         {
-            var post = _postsDataStore.Posts.FirstOrDefault(p => p.Id == postId);
-            if (post == null) return NotFound();
+            if (!await _websiteInfoRepository.PostExistsAsync(postId))
+            {
+                return NotFound();
+            }
 
-            var commentFromStore = post.Comments.FirstOrDefault(c => c.Id == commentId);
-            if (commentFromStore == null) return NotFound();
+            var commentEntity = await _websiteInfoRepository.GetCommentAsync(postId, commentId);
+
+            if (commentEntity == null)
+            {
+                return NotFound();
+            }
             _mailService.Send(subject: $"Post {postId} was deleted.", message: "It truly was");
-            post.Comments.Remove(commentFromStore);
+
+            _websiteInfoRepository.DeleteComment(commentEntity);
+
+            await _websiteInfoRepository.SaveChangesAsync();
+
             return NoContent();
         }
     }

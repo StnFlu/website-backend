@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using website_backend.Models;
+using website_backend.Services;
 
 namespace website_backend.Controllers
 {
@@ -7,28 +9,32 @@ namespace website_backend.Controllers
     [Route("api/posts")]
     public class PostsController : ControllerBase
     {
-        private readonly PostsDataStore _postsDataStore;
+        private readonly IWebsiteRepository _websiteInfoRepository;
+        private readonly IMapper _mapper;
 
-
-        public PostsController(PostsDataStore postsDataStore)
+        public PostsController(IWebsiteRepository websiteInfoRepository, IMapper mapper)
         {
-            _postsDataStore = postsDataStore ?? throw new ArgumentNullException(nameof(postsDataStore));
-
+            _websiteInfoRepository = websiteInfoRepository ?? throw new ArgumentNullException(nameof(websiteInfoRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(websiteInfoRepository));
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<PostDto>> GetPosts()
+        public async Task<ActionResult<IEnumerable<PostWithoutCommentsDto>>> GetPosts()
         {
-            return Ok(_postsDataStore.Posts);
+            var postEntities = await _websiteInfoRepository.GetPostsAsync();
+
+            return Ok(_mapper.Map<IEnumerable<PostWithoutCommentsDto>>(postEntities));
         }
 
         [HttpGet("{id}")]
-        public ActionResult<PostDto> GetPost(int id)
+        public async Task<IActionResult> GetPost(int id, bool includeComments = false)
         {
-            var postToReturn = _postsDataStore.Posts.
-                FirstOrDefault(post => post.Id == id);
-            if (postToReturn == null) return NotFound();
-            return Ok(postToReturn);
+            var post = await _websiteInfoRepository.GetPostAsync(id, includeComments);
+            if (post == null) return NotFound();
+
+            if (includeComments) return Ok(_mapper.Map<PostDto>(post));
+
+            return Ok(_mapper.Map<PostWithoutCommentsDto>(post));
         }
 
 

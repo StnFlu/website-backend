@@ -16,7 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 builder.Services.AddDbContext<WebsiteContext>(
-    dbContextOptions => dbContextOptions.UseSqlite(builder.Configuration["ConnectionStrings:WebsiteDBConnectionString"]));
+    dbContextOptions => dbContextOptions.UseSqlite(builder.Configuration["ConnectionString:WebsiteDBConnectionString"]));
 
 #if DEBUG
 builder.Services.AddTransient<IMailService, LocalMailService>();
@@ -25,6 +25,9 @@ builder.Services.AddTransient<IMailService, CloudMailService>();
 #endif
 
 builder.Services.AddSingleton<PostsDataStore>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<IWebsiteRepository, WebsiteInfoRepository>();
 
 var app = builder.Build();
 
