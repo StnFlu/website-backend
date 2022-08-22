@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using website_backend.DbContexts;
 
@@ -10,9 +11,10 @@ using website_backend.DbContexts;
 namespace website_backend.Migrations
 {
     [DbContext(typeof(WebsiteContext))]
-    partial class WebsiteContextModelSnapshot : ModelSnapshot
+    [Migration("20220822162715_add-type-to-post")]
+    partial class addtypetopost
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.8");
@@ -52,82 +54,82 @@ namespace website_backend.Migrations
                         {
                             Id = 1,
                             Body = "this is better than anything I could ever do",
-                            CreatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7479),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PostId = 1,
                             Title = "Really cool!",
-                            UpdatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7482)
+                            UpdatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
                             Body = "lorem ipsum is a sample text who cares tho",
-                            CreatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7484),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PostId = 1,
                             Title = "Lorem ",
-                            UpdatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7486)
+                            UpdatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
                             Body = "lorem ipsum is a sample text who cares tho",
-                            CreatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7488),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PostId = 1,
                             Title = "Lorem Log 3",
-                            UpdatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7489)
+                            UpdatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 4,
                             Body = "this is dev log one",
-                            CreatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7490),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PostId = 2,
                             Title = "Really cool!",
-                            UpdatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7492)
+                            UpdatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 5,
                             Body = "this is dev log two",
-                            CreatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7493),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PostId = 2,
                             Title = "Dev Lorem 2",
-                            UpdatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7494)
+                            UpdatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 6,
                             Body = "lorem ipsum is a sample text who cares tho",
-                            CreatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7496),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PostId = 2,
                             Title = "Lorem Log 3",
-                            UpdatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7497)
+                            UpdatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 7,
                             Body = "So this is how you do it!",
-                            CreatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7499),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PostId = 3,
                             Title = "Really cool!",
-                            UpdatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7500)
+                            UpdatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 8,
                             Body = "I could do way better",
-                            CreatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7502),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PostId = 3,
                             Title = "Kinda sucks",
-                            UpdatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7503)
+                            UpdatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 9,
                             Body = "lorem ipsum is a sample text who cares tho",
-                            CreatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7504),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PostId = 3,
                             Title = "Lorem ipsum",
-                            UpdatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7506)
+                            UpdatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -165,28 +167,28 @@ namespace website_backend.Migrations
                         {
                             Id = 1,
                             Body = "this is dev log one",
-                            CreatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7346),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Dev Log 1",
                             Type = "Dev Log",
-                            UpdatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7372)
+                            UpdatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
                             Body = "this is dev log two",
-                            CreatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7374),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Dev Log 2",
                             Type = "Dev Log",
-                            UpdatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7375)
+                            UpdatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
                             Body = "this is dev log three",
-                            CreatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7377),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Dev Log 3",
                             Type = "Dev Log",
-                            UpdatedOn = new DateTime(2022, 8, 22, 17, 29, 38, 489, DateTimeKind.Local).AddTicks(7379)
+                            UpdatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 

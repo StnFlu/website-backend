@@ -20,6 +20,8 @@ namespace website_backend.Entities
         public Comment(string title)
         {
             Title = title;
+            CreatedOn = DateTime.Now;
+            UpdatedOn = DateTime.Now;
         }
     }
 }

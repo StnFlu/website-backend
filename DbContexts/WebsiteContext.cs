@@ -20,19 +20,18 @@ namespace website_backend.DbContexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Post>().HasData(
-                new Post("Dev Log 1")
+                new Post("Dev Log 1", "Dev Log")
                 {
                     Id = 1,
                     Body = "this is dev log one",
 
                 },
-                new Post("Dev Log 2")
+                new Post("Dev Log 2", "Dev Log")
                 {
                     Id = 2,
                     Body = "this is dev log two",
-
                 },
-                new Post("Dev Log 3")
+                new Post("Dev Log 3", "Dev Log")
                 {
                     Id = 3,
                     Body = "this is dev log three",
@@ -87,6 +86,7 @@ namespace website_backend.DbContexts
                     Id = 8,
                     PostId = 3,
                     Body = "I could do way better",
+
                 },
                 new Comment("Lorem ipsum")
                 {
