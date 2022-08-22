@@ -32,6 +32,11 @@ builder.Services.AddTransient<IMailService, CloudMailService>();
 builder.Services.AddSingleton<PostsDataStore>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+{
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
+
 builder.Services.AddScoped<IWebsiteRepository, WebsiteInfoRepository>();
 
 var app = builder.Build();
@@ -44,6 +49,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+app.UseCors("corsapp");
 
 app.UseAuthorization();
 
