@@ -16,5 +16,8 @@
 
         public ICollection<CommentDto> Comments { get; set; } = new List<CommentDto>();
 
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
+
     }
 }

@@ -10,5 +10,7 @@ namespace website_backend.Models
 
         [MaxLength(512)]
         public string? Body { get; set; }
+
+
     }
 }
