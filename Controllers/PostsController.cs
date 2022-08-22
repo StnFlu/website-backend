@@ -52,7 +52,7 @@ namespace website_backend.Controllers
         public async Task<ActionResult> UpdatePost(
         int postId,
         int commentId,
-        CommentCreationDto post)
+        PostCreationDto post)
         {
             if (!await _websiteInfoRepository.PostExistsAsync(postId))
             {
