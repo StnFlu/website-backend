@@ -21,15 +21,21 @@ namespace website_backend
                         {
                             Id = 1,
                             Title = "u sure",
-                            Body = "it's too cool"
+                            Body = "it's too cool",
+                            CreatedOn = DateTime.Now,
+                            UpdatedOn = DateTime.Now,
                         },
                          new CommentDto()
                         {
                             Id = 2,
                             Title = "u sure",
-                            Body = "it's too cool"
+                            Body = "it's too cool",
+                            CreatedOn = DateTime.Now,
+                            UpdatedOn = DateTime.Now,
                         },
-                    }
+                    },
+                    CreatedOn = DateTime.Now,
+                    UpdatedOn = DateTime.Now,
                 },
                  new PostDto()
                 {
@@ -42,15 +48,21 @@ namespace website_backend
                         {
                             Id = 1,
                             Title = "u sure",
-                            Body = "it's too cool"
+                            Body = "it's too cool",
+                            CreatedOn = DateTime.Now,
+                            UpdatedOn = DateTime.Now,
                         },
                          new CommentDto()
                         {
                             Id = 2,
                             Title = "u sure",
-                            Body = "it's too cool"
+                            Body = "it's too cool",
+                            CreatedOn = DateTime.Now,
+                            UpdatedOn = DateTime.Now,
                         },
-                    }
+                    },
+                      CreatedOn = DateTime.Now,
+                    UpdatedOn = DateTime.Now,
                 },
                   new PostDto()
                 {
@@ -63,15 +75,23 @@ namespace website_backend
                         {
                             Id = 1,
                             Title = "u sure",
-                            Body = "it's too cool"
+                            Body = "it's too cool",
+                            CreatedOn = DateTime.Now,
+                            UpdatedOn = DateTime.Now,
                         },
                          new CommentDto()
                         {
                             Id = 2,
                             Title = "u sure",
-                            Body = "it's too cool"
+                            Body = "it's too cool",
+                            CreatedOn = DateTime.Now,
+                             UpdatedOn = DateTime.Now,
                         },
-                    }
+                    },
+                      CreatedOn = DateTime.Now,
+                      UpdatedOn = DateTime.Now,
+
+
                 },
             };
         }
