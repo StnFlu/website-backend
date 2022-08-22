@@ -8,9 +8,12 @@ namespace website_backend.Services
     {
 
         private readonly WebsiteContext _context;
+        private readonly ILogger<WebsiteInfoRepository> _logger;
 
-        public WebsiteInfoRepository(WebsiteContext context)
+
+        public WebsiteInfoRepository(WebsiteContext context, ILogger<WebsiteInfoRepository> logger)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(context));
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 

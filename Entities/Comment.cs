@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace website_backend.Entities
 {
-    public class Comment
+    public class Comment : BaseEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -20,6 +20,8 @@ namespace website_backend.Entities
         public Comment(string title)
         {
             Title = title;
+            CreatedOn = DateTime.Now;
+            UpdatedOn = DateTime.Now;
         }
     }
 }
