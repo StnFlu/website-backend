@@ -11,13 +11,13 @@ namespace website_backend.Controllers
     [Route("api/posts")]
     public class PostsController : ControllerBase
     {
-        private readonly ILogger<CommentsController> _logger;
+        private readonly ILogger<PostsController> _logger;
 
         private readonly IWebsiteRepository _websiteInfoRepository;
         private readonly IMapper _mapper;
         private readonly IMailService _mailService;
 
-        public PostsController(IWebsiteRepository websiteInfoRepository, ILogger<CommentsController> logger, IMapper mapper, IMailService mailService)
+        public PostsController(IWebsiteRepository websiteInfoRepository, ILogger<PostsController> logger, IMapper mapper, IMailService mailService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 

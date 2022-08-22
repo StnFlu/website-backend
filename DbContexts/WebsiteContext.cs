@@ -5,12 +5,16 @@ namespace website_backend.DbContexts
 {
     public class WebsiteContext : DbContext
     {
+        private readonly ILogger<WebsiteContext> _logger;
+
+
         public DbSet<Post> Posts { get; set; } = null!;
         public DbSet<Comment> Comments { get; set; } = null!;
 
-        public WebsiteContext(DbContextOptions<WebsiteContext> options)
+        public WebsiteContext(DbContextOptions<WebsiteContext> options, ILogger<WebsiteContext> logger)
             : base(options)
         {
+            _logger = logger;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -91,6 +95,51 @@ namespace website_backend.DbContexts
                     Body = "lorem ipsum is a sample text who cares tho",
                 }
             );
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            OnBeforeSaving();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override async Task<int> SaveChangesAsync(
+           bool acceptAllChangesOnSuccess,
+           CancellationToken cancellationToken = default(CancellationToken)
+        )
+        {
+
+            OnBeforeSaving();
+            return (await base.SaveChangesAsync(acceptAllChangesOnSuccess,
+                          cancellationToken));
+        }
+
+        private void OnBeforeSaving()
+        {
+            var entries = ChangeTracker.Entries();
+            var utcNow = DateTime.UtcNow;
+            _logger.LogInformation(utcNow.ToString());
+
+            foreach (var entry in entries)
+            {
+                _logger.LogInformation(entry.ToString());
+
+                if (entry.Entity is BaseEntity trackable)
+                {
+                    switch (entry.State)
+                    {
+                        case EntityState.Modified:
+                            trackable.UpdatedOn = utcNow;
+                            entry.Property("CreatedOn").IsModified = false;
+                            break;
+
+                        case EntityState.Added:
+                            trackable.CreatedOn = utcNow;
+                            trackable.UpdatedOn = utcNow;
+                            break;
+                    }
+                }
+            }
         }
     }
 }
